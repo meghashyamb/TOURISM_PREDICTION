@@ -20,8 +20,8 @@ Please provide details for below characteristics to get a prediction.
 
 gender = st.selectbox("Gender", ["Male", "Female"])
 age = st.number_input("Age", min_value=18, max_value=120, value=30)
-passport = st.selectbox("Passport", [0, 1])
 maritalstatus = st.selectbox("Marital Status", ["Single", "Divorced", "Married"])
+passport = st.selectbox("Passport", [0, 1])
 occupation = st.selectbox("Occupation", ["Salaried", "Free Lancer", "Small Business", "Large Business"])
 designation = st.selectbox("Designation", ["Manager", "Executive", "Senior Manager", "AVP", "VP"])
 monthlyincome = st.number_input("Monthly Income", min_value=0, max_value=1000000, value=5000)
@@ -39,26 +39,29 @@ pitchsatisfactionscore = st.number_input("Pitch Satisfaction Score", min_value=1
 
 
 # Assemble input into dataframe
+
 input_data = pd.DataFrame([{
-    "gender" : Gender,
-    "age" : Age,
-    "maritalstatus" : Marital Status,
-    "passport" : Passport,
-    "occupation" : Occupation,
-    "designation" : Designation,
-    "monthlyincome" : Monthly Income,
-    "owncar" : Own Car,
-    "citytier" : City Tier,
-    "preferredpropertystar" : Preferred Property Star,
-    "numberofpersonvisiting" : Number of Person Visiting,
-    "numberofchildrenvisiting" : Number of Children Visiting,
-    "typeofcontact" : Type of Contact,
-    "numberoftrips" : Number of Trips,
-    "durationofpitch" : Duration of Pitch,
-    "numberoffollowups" : Number of Follow-ups,
-    "productpitched" : Product Pitched,
-    "pitchsatisfactionscore" : Pitch Satisfaction Score
+    "Gender" : gender,
+    "Age" : age,
+    "Marital Status" : maritalstatus,
+    "Passport" : passport,
+    "Occupation" : occupation,
+    "Designation" : designation,
+    "Monthly Income" : monthlyincome,
+    "Own Car" : owncar,
+    "City Tier" : citytier,
+    "Preferred Property Star" : preferredpropertystar,
+    "Number of Persons Visiting" : numberofpersonvisiting,
+    "Number of Children Visiting" : numberofchildrenvisiting,
+    "Type of Contact" : typeofcontact,
+    "Number of Trips" : numberoftrips,
+    "Duration of Pitch" : durationofpitch,
+    "Number of Follow-ups" : numberoffollowups,
+    "Product Pitched" : productpitched,
+    "Pitch Satisfaction Score" : pitchsatisfactionscore
 }])
+
+
 
 
 # Predict button
