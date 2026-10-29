@@ -1,0 +1,79 @@
+name: MLOps_Tourism_Package_prediction_pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+
+# JOB 1: Register Dataset
+  register-dataset:
+    name: Register Dataset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r tourism_project/requirements.txt
+      - name: Register Dataset
+        run: python tourism_project/model_building/data_register.py
+      - name: Upload registered dataset
+        uses: actions/upload-artifact@v4
+        with:
+          name: tourism-dataset
+          path: tourism_project/data/tourism_data.csv
+
+# JOB 2: Data Preparation
+  data-preparation:
+    name: Data Preparation
+    needs: register-dataset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r tourism_project/model_deployment/requirements.txt
+      - name: Prepare Data
+        run: python tourism_project/model_building/data_prep.py
+      - name: Upload train/test splits
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-splits
+          path: |
+            tourism_project/data/X_train.csv
+            tourism_project/data/X_test.csv
+            tourism_project/data/y_train.csv
+            tourism_project/data/y_test.csv
+
+# JOB 3: Model Training + MLFlow Tracking
+  model-training:
+    name: Model Training
+    needs: data-preparation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r tourism_project/model_deployment/requirements.txt
+      - name: Download train/test splits
+        uses: actions/download-artifact@v4
+        with:
+          name: data-splits
+          path: tourism_project/data
+      - name: Run model training script
+        run: python tourism_project/model_building/train.py
+      - name: Commit and push trained model
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tourism_project/model_deployment/model.joblib
+          git commit -m "Add trained model [skip ci]" || echo "No changes to commit"
+          git push
