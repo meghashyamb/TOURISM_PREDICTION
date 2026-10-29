@@ -10,7 +10,7 @@ folder_path = "tourism_project/model_deployment"
 os.makedirs(folder_path, exist_ok=True)
 
 # model file
-my_model = xgb_model
+my_model = model.joblib
 
 # saving joblib file
 model_path = os.path.join(folder_path, "model.joblib")
