@@ -6,11 +6,22 @@ import joblib
 
 
 # Define the path for the model
-os.makedirs("tourism_project/model_deployment", exist_ok=True)
+folder_path = "tourism_project/model_deployment"
+os.makedirs(folder_path, exist_ok=True)
 
-model_filename = "model.joblib"
-model_path = os.path.join(os.path.dirname(__file__), model_filename)
+# model file
+my_model = xgb_model
+
+# saving joblib file
+model_path = os.path.join(folder_path, "model.joblib")
+joblib.dump(my_model, model_path)
+
+print(f"Model saved to {model_path}")
+
+# Load the model
+model_path = "tourism_project/model_deployment/model.joblib"
 model = joblib.load(model_path)
+
 
 # Streamlit app
 
