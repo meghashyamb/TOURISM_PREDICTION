@@ -4,8 +4,12 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load the model committed by the pipeline (sits next to this file)
-model_path = os.path.join(os.path.dirname(__file__), "model.joblib")
+
+# Define the path for the model
+os.makedirs("tourism_project/model_deployment", exist_ok=True)
+
+model_filename = "model.joblib"
+model_path = os.path.join(os.path.dirname(__file__), model_filename)
 model = joblib.load(model_path)
 
 # Streamlit app
