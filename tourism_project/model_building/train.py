@@ -109,7 +109,6 @@ with mlflow.start_run():
 # it as an MLFlow artefact for traceability
 
 model_path = "tourism_project/model_deployment/model.joblib"
-os.makedirs(os.path.dirname(model_path), exist_ok=True)
 joblib.dump(best_model, model_path)
 mlflow.log_artifact(model_path, artifact_path="model")
 print(f"Model saved to {model_path}")
