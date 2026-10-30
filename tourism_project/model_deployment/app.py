@@ -1,30 +1,18 @@
-
 import os
 import streamlit as st
 import pandas as pd
 import joblib
 
-
 # Define the path for the model
-folder_path = "tourism_project/model_deployment"
-os.makedirs(folder_path, exist_ok=True)
-
-# model file
-my_model = model.joblib
-
-# saving joblib file
-model_path = os.path.join(folder_path, "model.joblib")
-joblib.dump(my_model, model_path)
-
-print(f"Model saved to {model_path}")
-
-# Load the model
 model_path = "tourism_project/model_deployment/model.joblib"
-model = joblib.load(model_path)
 
+# Load the model directly
+if os.path.exists(model_path):
+    model = joblib.load(model_path)
+else:
+    st.warning("Model file not found. Please ensure model.joblib is uploaded to the repository.")
 
 # Streamlit app
-
 st.title("Tourism Package Prediction")
 st.write("""
 This application predicts if a customer would sign-up for tourism package.
@@ -32,7 +20,6 @@ Please provide details for below characteristics to get a prediction.
 """)
 
 # User input
-
 gender = st.selectbox("Gender", ["Male", "Female"])
 age = st.number_input("Age", min_value=18, max_value=120, value=30)
 maritalstatus = st.selectbox("Marital Status", ["Single", "Divorced", "Married"])
@@ -52,9 +39,7 @@ numberoffollowups = st.number_input("Number of Follow-ups", min_value=0, max_val
 productpitched = st.selectbox("Product Pitched", ["Deluxe", "Basic", "Standard", "Super Deluxe", "King"])
 pitchsatisfactionscore = st.number_input("Pitch Satisfaction Score", min_value=1, max_value=5, value=3)
 
-
 # Assemble input into dataframe
-
 input_data = pd.DataFrame([{
     "Gender" : gender,
     "Age" : age,
@@ -76,10 +61,8 @@ input_data = pd.DataFrame([{
     "Pitch Satisfaction Score" : pitchsatisfactionscore
 }])
 
-
 # Predict button
-
-if st.button("Tourism Package?"):
+if st.button("Tourism Package?") and 'model' in locals():
     prediction = model.predict(input_data)[0]
     st.subheader("Prediction Result:")
-
+    st.write("Will buy package" if prediction == 1 else "Will not buy package")
