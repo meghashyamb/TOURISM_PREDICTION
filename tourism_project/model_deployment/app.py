@@ -77,8 +77,6 @@ input_data = pd.DataFrame([{
 }])
 
 
-
-
 # Predict button
 
 if st.button("Tourism Package?"):
