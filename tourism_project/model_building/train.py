@@ -82,6 +82,7 @@ with mlflow.start_run():
 
     # Store and evaluate the best model
     best_model = grid_search.best_estimator_
+    print("Best Params:", grid_search.best_params_)
 
     classification_threshold = 0.45
 
@@ -105,10 +106,10 @@ with mlflow.start_run():
         "test_f1-score": test_report["1"]["f1-score"]
     })
 
-# save next to app.py so the Streamlit app can load it directly and log
-# it as an MLFlow artefact for traceability
 
-model_path = "tourism_project/model_deployment/model.joblib"
-joblib.dump(best_model, model_path)
-mlflow.log_artifact(model_path, artifact_path="model")
-print(f"Model saved to {model_path}")
+    # Save next to app.py so the Streamlit app can load it directly, and log
+    # it as an MLflow artifact for traceability
+    model_path = "tourism_project/model_deployment/best_toursim_pred.joblib"
+    joblib.dump(best_model, model_path)
+    mlflow.log_artifact(model_path, artifact_path="model")
+    print(f"Model saved to {model_path}")
