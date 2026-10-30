@@ -42,6 +42,8 @@ preprocessor = make_column_transformer(
     (OneHotEncoder(handle_unknown='ignore'), categorical_features)
 )
 
+# Handle class imbalance based on y_train
+class_weight = y_train.value_counts()[0] / y_train.value_counts()[1]
 
 # Define base XGBoost model
 xgb_model = xgb.XGBClassifier(scale_pos_weight=class_weight, random_state=42)
@@ -62,7 +64,7 @@ model_pipeline = make_pipeline(preprocessor, xgb_model)
 with mlflow.start_run():
     # Hyperparameter tuning
     grid_search = GridSearchCV(model_pipeline, param_grid, cv=5, n_jobs=-1)
-    grid_search.fit(X_train, y_train)
+    grid_search.fit(x_train, y_train.values.ravel())
 
     # Log all parameter combinations and their mean test scores
     results = grid_search.cv_results_
@@ -86,10 +88,10 @@ with mlflow.start_run():
 
     classification_threshold = 0.45
 
-    y_pred_train_proba = best_model.predict_proba(X_train)[:, 1]
+    y_pred_train_proba = best_model.predict_proba(x_train)[:, 1]
     y_pred_train = (y_pred_train_proba >= classification_threshold).astype(int)
 
-    y_pred_test_proba = best_model.predict_proba(X_test)[:, 1]
+    y_pred_test_proba = best_model.predict_proba(x_test)[:, 1]
     y_pred_test = (y_pred_test_proba >= classification_threshold).astype(int)
 
     train_report = classification_report(y_train, y_pred_train, output_dict=True)
@@ -106,10 +108,8 @@ with mlflow.start_run():
         "test_f1-score": test_report["1"]["f1-score"]
     })
 
-
-    # Save next to app.py so the Streamlit app can load it directly, and log
-    # it as an MLflow artifact for traceability
-    model_path = "tourism_project/model_deployment/best_toursim_pred.joblib"
+    # Save next to app.py with the name 'model.joblib' so the pipeline and app can access it
+    model_path = "tourism_project/model_deployment/model.joblib"
     joblib.dump(best_model, model_path)
     mlflow.log_artifact(model_path, artifact_path="model")
     print(f"Model saved to {model_path}")
