@@ -72,6 +72,8 @@ jobs:
           name: data-splits
           path: tourism_project/data
       - name: Run model training script
+        env:
+          MLFLOW_TRACKING_URI: "https://casing-obstinate-disobey.ngrok-free.dev"
         run: python tourism_project/model_building/train.py
       - name: Commit and push trained model
         run: |
