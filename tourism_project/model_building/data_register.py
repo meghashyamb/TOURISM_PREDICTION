@@ -24,3 +24,4 @@ if missing:
 print("Dataset registered successfully.")
 print(f"Rows: {df.shape[0]}, Columns: {df.shape[1]}")
 print("Columns:", list(df.columns))
+
