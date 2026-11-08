@@ -1,5 +1,6 @@
 # for data manipulation
 import pandas as pd
+import os
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
@@ -11,18 +12,18 @@ from sklearn.metrics import classification_report
 import joblib
 import mlflow
 
-mlflow.set_tracking_uri("http://localhost:5000")
+# Configure MLflow to point to the active public Ngrok URL rather than local file storage
+TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
+mlflow.set_tracking_uri(TRACKING_URI)
 mlflow.set_experiment("MLOps_Tourism_Package_prediction_experiment")
 
 # Xtrain/Xtest/ytrain/ytest are downloaded from the previous job's artifact
-
 x_train = pd.read_csv("tourism_project/data/X_train.csv")
 x_test = pd.read_csv("tourism_project/data/X_test.csv")
 y_train = pd.read_csv("tourism_project/data/y_train.csv")
 y_test = pd.read_csv("tourism_project/data/y_test.csv")
 
 # One-hot encode categorical and numerical features
-
 numeric_features = [
     'Age', 'CityTier' , 'DurationOfPitch', 'NumberOfPersonVisiting',
     'NumberOfFollowups', 'PreferredPropertyStar','NumberOfTrips',
@@ -36,7 +37,6 @@ categorical_features = [
     ]
 
 # Define the preprocessor steps
-
 preprocessor = make_column_transformer(
     (StandardScaler(), numeric_features),
     (OneHotEncoder(handle_unknown='ignore'), categorical_features)
